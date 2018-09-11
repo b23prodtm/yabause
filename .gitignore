@@ -1,3 +1,4 @@
 yabause/build
 *.cmake
-*.inc
+!yabause/platforms/**/*.cmake
+!yabause/src/android/*.cmake

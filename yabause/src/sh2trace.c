@@ -248,13 +248,13 @@ FASTCALL void sh2_trace(SH2_struct *state, u32 address)
         SH2GetRegisters(state, &state->regs);
 
         SH2Disasm(address, opcode, 0, &state->regs, buf);
-        fprintf(logfile, "[%c] %08X: %04X  %-44s [%12llu]\n",
+        fprintf(logfile, "[%c] %08X: %04X  %-44s [%12lu]\n",
                 state==SSH2 ? 'S' : 'M', (int)address, (int)opcode, buf+12,
-                (unsigned long long)current_cycles);
+                (long unsigned int)current_cycles);
 #ifdef ECHO_TO_STDERR
-        fprintf(stderr, "[%c] %08X: %04X  %-44s [%12llu]\n",
+        fprintf(stderr, "[%c] %08X: %04X  %-44s [%12lu]\n",
                 state==SSH2 ? 'S' : 'M', (int)address, (int)opcode, buf+12,
-                (unsigned long long)current_cycles);
+                (long unsigned int)current_cycles);
 #endif
 
         for (i = 0; i < 16; i++) {

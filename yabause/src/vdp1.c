@@ -541,7 +541,7 @@ void Vdp1DrawCommands(u8 * ram, Vdp1 * regs, u8* back_framebuffer)
    }
 }
 
-//ensure that registers are set correctly 
+//ensure that registers are set correctly
 void Vdp1FakeDrawCommands(u8 * ram, Vdp1 * regs)
 {
    u16 command = T1ReadWord(ram, regs->addr);
@@ -611,7 +611,7 @@ void Vdp1FakeDrawCommands(u8 * ram, Vdp1 * regs)
    }
 }
 
-void Vdp1Draw(void) 
+void Vdp1Draw(void)
 {
    if (!Vdp1External.disptoggle)
    {
@@ -758,7 +758,7 @@ static u32 Vdp1DebugGetCommandNumberAddr(u32 number)
          case 2: // CALL, call a subroutine
             if (returnAddr == 0xFFFFFFFF)
                returnAddr = addr + 0x20;
-	
+
             addr = T1ReadWord(Vdp1Ram, addr + 2) * 8;
             break;
          case 3: // RETURN, return from subroutine
@@ -774,7 +774,7 @@ static u32 Vdp1DebugGetCommandNumberAddr(u32 number)
       if (addr > 0x7FFE0)
          return 0xFFFFFFFF;
       command = T1ReadWord(Vdp1Ram, addr);
-      commandCounter++;    
+      commandCounter++;
    }
 
    if (commandCounter == number)
@@ -846,7 +846,7 @@ void Vdp1DebugGetCommandNumberName(u32 number, char *outstring)
             return;
       }
 
-      sprintf(outstring, "%03u %s", number, command_name);
+      sprintf(outstring, "%03u %s", (unsigned int)number, command_name);
    }
 }
 
@@ -1002,7 +1002,7 @@ void Vdp1DebugCommand(u32 number, char *outstring)
             AddString(outstring, "Reversed horizontal and vertical\r\n");
             break;
          default: break;
-      }      
+      }
    }
 
    // Only draw commands use CMDPMOD
@@ -1204,7 +1204,7 @@ u32 *Vdp1DebugTexture(u32 number, int *w, int *h)
    u32 dot;
    u8 SPD;
    u32 alpha;
-   u32 *textdata;   
+   u32 *textdata;
    int isendcode=0;
    int code=0;
    int ret;

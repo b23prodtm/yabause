@@ -27,7 +27,7 @@
 
 #ifdef __MINGW32__
 // I blame mingw for this
-#define _WIN32_WINNT 0x501
+//#define _WIN32_WINNT 0x501
 #endif
 
 #include <winsock2.h>

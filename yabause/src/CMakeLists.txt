@@ -8,13 +8,33 @@ cmake_minimum_required(VERSION 2.8)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMakeTests)
 
+option(YAB_FORCE_armv5tel "Compile for ARM Cross Compile")
+set(CC_TARGET_ARCH ${CMAKE_SYSTEM_PROCESSOR})
+if (YAB_FORCE_ARM)
+	set(CMAKE_SYSTEM_PROCESSOR "armv5tel")
+	set(CC_TARGET_ARCH "ARM")
+endif()
+
+option(YAB_FORCE_ARMV7 "Compile for ARMv7l Cross Compile")
+if (YAB_FORCE_ARMV7 OR (IOS_ARCH STREQUAL "^armv"))
+	set(CMAKE_SYSTEM_PROCESSOR "armv7l")
+	set(CC_TARGET_ARCH "ARMV7")
+endif()
+
+option(YAB_FORCE_ARMV8 "Compile for ARM64 Cross Compile")
+if (YAB_FORCE_ARMV8 OR (IOS_ARCH STREQUAL "^arm64"))
+	set(CMAKE_SYSTEM_PROCESSOR "arm64")
+	set(CC_TARGET_ARCH "ARMV8")
+endif()
+message("Targeted Architecture ${CC_TARGET_ARCH}")
+
 set(yabause_HEADERS
 	bios.h
 	cdbase.h cheat.h coffelf.h core.h cs0.h cs1.h cs2.h
 	debug.h
 	error.h
 	gameinfo.h
-	japmodem.h 
+	japmodem.h
 	m68kcore.h m68kd.h memory.h movie.h
 	netlink.h
 	osdcore.h
@@ -53,7 +73,7 @@ if(YAB_WANT_MPEG)
   if(FFMPEG_FOUND)
     add_definitions(-DHAVE_MPEG=1)
     include_directories(${FFMPEG_INCLUDE_DIRS})
-    set(YABAUSE_LIBRARIES ${YABAUSE_LIBRARIES} ${FFMPEG_LIBRARIES}) 
+    set(YABAUSE_LIBRARIES ${YABAUSE_LIBRARIES} ${FFMPEG_LIBRARIES})
   endif()
 endif()
 
@@ -66,12 +86,12 @@ if (YAB_USE_SSF)
     include_directories(${ZLIB_INCLUDE_DIRS})
     set(YABAUSE_LIBRARIES ${YABAUSE_LIBRARIES} ${ZLIB_LIBRARIES})
 
-    set(yabause_SOURCES ${yabause_SOURCES} 
+    set(yabause_SOURCES ${yabause_SOURCES}
       aosdk/corlett.c
       aosdk/eng_ssf.c
       aosdk/ssf.c)
 
-    set(yabause_HEADERS ${yabause_HEADERS} 
+    set(yabause_HEADERS ${yabause_HEADERS}
       aosdk/ao.h
       aosdk/corlett.h
       aosdk/ssf.h)
@@ -331,7 +351,7 @@ if (MSVC)
 		set(DDK_DIR "$ENV{SYSTEMDRIVE}/WINDDK/7600.16385.0/")
         endif (EXISTS "$ENV{SYSTEMDRIVE}/WINDDK/3790.1830/")
 
-	add_definitions(-DHAVE_C99_VARIADIC_MACROS -D_CRT_SECURE_NO_WARNINGS -DC68K_NO_JUMP_TABLE 
+	add_definitions(-DHAVE_C99_VARIADIC_MACROS -D_CRT_SECURE_NO_WARNINGS -DC68K_NO_JUMP_TABLE
 			-D_UNICODE -DUNICODE)
 endif (MSVC)
 
@@ -424,7 +444,7 @@ if (WIN32)
 	if (YAB_NETWORK OR YAB_WANT_GDBSTUB)
     	# Add Winsock if necessary
 		set(YABAUSE_LIBRARIES ${YABAUSE_LIBRARIES} "wsock32")
-		set(YABAUSE_LIBRARIES ${YABAUSE_LIBRARIES} "ws2_32")        
+		set(YABAUSE_LIBRARIES ${YABAUSE_LIBRARIES} "ws2_32")
 	endif()
 	if (YAB_USE_SCSPMIDI)
 		set(YABAUSE_LIBRARIES ${YABAUSE_LIBRARIES} winmm)
@@ -432,14 +452,13 @@ if (WIN32)
 
 endif (WIN32)
 
-option(YAB_WANT_ARM7 "Build a binary with arm7 support")
+option(YAB_WANT_ARM7 "Build a binary with arm7 support" ON)
 
 # SH2 dynamic recompiler
 message(STATUS "CMAKE_SYSTEM_NAME ${CMAKE_SYSTEM_NAME}")
 message(STATUS "CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR}")
-option(SH2_DYNAREC "SH2 dynamic recompiler" OFF)
+option(SH2_DYNAREC "SH2 dynamic recompiler")
 if (SH2_DYNAREC)
-	if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
 		if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "i686")
 			enable_language(ASM-ATT)
 			set(yabause_SOURCES ${yabause_SOURCES}
@@ -481,7 +500,7 @@ if (SH2_DYNAREC)
 			set(yabause_SOURCES ${yabause_SOURCES}
 				sh2_dynarec/sh2_dynarec.c sh2_dynarec/linkage_arm.s)
 			set(yabause_HEADERS ${yabause_HEADERS}
-				sh2_dynarec/sh2_dynarec.h)
+				sh2_dynarec/sh2_dynarec.h sh2_dynarec/assem_arm.h)
 			set_source_files_properties(sh2_dynarec/sh2_dynarec.c PROPERTIES COMPILE_FLAGS "-Wno-pointer-to-int-cast -Wno-int-to-pointer-cast")
 			add_definitions(-DSH2_DYNAREC=1)
 			add_definitions(-DANDROID=1)
@@ -489,7 +508,6 @@ if (SH2_DYNAREC)
 				add_definitions(-DHAVE_ARMv6=1 -DHAVE_ARMv7=1)
 			endif()
 		endif ()
-	endif("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
 endif (SH2_DYNAREC)
 
 # c68k
@@ -519,7 +537,7 @@ option(YAB_WANT_MUSASHI "Enable musashi 68k" ON)
 #TODO cross compile builds m68kmake for the target platform instead
 #of the native one, making it impossible to generate the core
 if (YAB_WANT_MUSASHI)
-    set (MUSASHI_GENERATED_SOURCES 
+    set (MUSASHI_GENERATED_SOURCES
         ${CMAKE_CURRENT_BINARY_DIR}/musashi/m68kopac.c
         ${CMAKE_CURRENT_BINARY_DIR}/musashi/m68kopdm.c
         ${CMAKE_CURRENT_BINARY_DIR}/musashi/m68kopnz.c
@@ -534,6 +552,7 @@ if (YAB_WANT_MUSASHI)
         SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/musashi
         CMAKE_GENERATOR "${CMAKE_GENERATOR}"
         INSTALL_COMMAND ""
+				CMAKE_ARGS "-DYAB_FORCE_${CC_TARGET_ARCH}=ON"
         BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/musashi
     )
 
@@ -544,15 +563,15 @@ if (YAB_WANT_MUSASHI)
       ${CMAKE_CURRENT_SOURCE_DIR}/musashi
     )
 
-	set(yabause_SOURCES ${yabause_SOURCES} 
+	set(yabause_SOURCES ${yabause_SOURCES}
       ${MUSASHI_GENERATED_SOURCES}
       musashi/m68kdasm.c
       musashi/m68kcpu.c
       m68kmusashi.c
       )
 
-	set(yabause_HEADERS 
-      ${yabause_HEADERS} 
+	set(yabause_HEADERS
+      ${yabause_HEADERS}
       musashi/m68k.h
       musashi/m68kcpu.h
       ${MUSASHI_GENERATED_HEADERS}
@@ -581,7 +600,7 @@ if (YAB_WANT_GDBSTUB)
 endif()
 
 # *DEBUG
-set(YAB_DEBUG "" CACHE STRING "List of enabled debug information") 
+set(YAB_DEBUG "" CACHE STRING "List of enabled debug information")
 foreach(DEBUG IN LISTS YAB_DEBUG)
 	if (${DEBUG} STREQUAL "main")
 		add_definitions(-DDEBUG=1)
@@ -716,9 +735,9 @@ if (MSVC)
         message(STATUS "Not enough C++11 support for dynarecs.")
     endif()
 elseif(ANDROID)
-    message(STATUS "CodeGen needs exceptions and rtti. Dynarecs disabled.")
+    message(STATUS "CodeGen needs exceptions and rtti. Dynarecs might be disabled.")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    message(STATUS "CodeGen doesn't build in Clang yet. Dynarecs disabled.")
+    message(STATUS "CodeGen doesn't build in Clang yet. Dynarecs are disabled.")
 else()
     CHECK_CXX_COMPILER_FLAG(-std=c++11 COMPILER_SUPPORTS_CXX11)
 
