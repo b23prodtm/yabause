@@ -1,6 +1,7 @@
 matrix:
   allow_failures:
-    - compiler: clang
+    - compiler: gcc
+    - language: android
   include:
     # linux
     - compiler: gcc
@@ -53,7 +54,7 @@ env:
   global:
     # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
    #   via the "travis encrypt" command using the project repo's public key
-   - secure: "4eLN73nrbAg+MO/gabXdwTshOy4xgDLHSLjmupgCnFjk5SMQqBFkCwqVCDNPmwQQ4BMaxjTjWmKkVOUaaP4Yzkw2rSBzmddoA2OefKhXVYgT0WTTYUcDDFmv/m7daXXnCUHGdeGbv6l3Tzh71JwhUs+tZ6tcIv0u1htJ3l7hSrqJ4Gx/siRWYAt7ytUThJyhW/hC+HQ7Ayrdcgk2+ugsLLA9P0p9E0RqI5BIWWX6jAAl1igeec5uumYlUUdx1YErLaVrkrCQm0YHa6wkqJs7rhU3i1Asdseh9SI1avOsx7Et25kdHVWoA873wwoVKQRgd0PpO8Al9RP4/sqs+1GHnz7CDwboi+MurnDkiWncsYXXYQYYO1WUcPvg5YEf3a2/THE27WWF65wfYXDUrQG5bSu1nk/nX/kBee7l7ogfYdiicrHF1ZIZ/eyavoh2XOTZl+0uKwajuwcoVYJYPT7DXTf3RK31FFmVox76/RcN2hRgvgdSqhG+feCp3aV4niqGWtA4GkzLH0tbulPKywbSdN1CQsn2vtOOW8CU/VndDT9vR9bnFl0ir4rvysYGKgGmsnEiNpS2zCLTDhkQe4c8YUv/s6OXYB5okRKYMqr31tpjINBSpXqwYbTRiGBK6T1oFRNCHVlMi5DgZiPjRr3M0IQD+dSuonZXgLe51K858RI="
+   - secure: "Hkf9HZos0iEaGcVtNq5IVFVBd0/t5jwHppnV5SkQrJ+vRXyUSEmwlg0u48DgFqaFlpWQhpCLlkQhS/ay7cbH6BZLk8TkLGC8EVJ7KdPI9w4q5XAzU0+hYuZ5FyxzlQO/kJTe8RewQaBa7+NXgdJMU4f+eJMbcoBiDPHuiQ+29qUkS6B/B8x+9oKNzXozxR0aoXGtvCMRcbPEnBtTTVzyldC0IqDhZB2+a7MnZOKOg43uuRMvFUPh1efyZtCDm6o3EmzQ+lMwkGBQ2qq7KQFJ18DhOhg9EYD8MKd+qhtTDoECJ2yZ34BiK4no+Crlu8Jv2XwThEg17W4pZwRjq6pDCDhWrBY80Z0c24s36MN4cLoKMsHEEmqtj0XrargA4qIyDRq+Q+92DrU0eIMl/YWJN+ogIKajI9bCGF3JSpLT799+cioDEEzJk2CBKCJCWLGV34OXY7crzjE+YpA69Oz/3kUyHFPXAiSazV20QaV2yd4ul580Ak6xxdZQSyWRGbVzvx3YchASlP4ulH6icoDqQMJldw78kexca6TZ88rNDjfdFEnLHyttsxoQN6Cwf69/P4LyIAG93PhD3dV124omhS6yBPGtZF8+f0+k/vJJN1iJ6xPEiovJlEOwfap1bNBusOo7i0y5Dm3RR+RkDFIsGZwOkB3ZbjTpE7mCoe0eMkg="
 addons:
   coverity_scan:
     project:
@@ -68,7 +69,7 @@ sudo: false
 before_install:
 # Coverity Scan certificate (global secure: COVERITY_SCAN_TOKEN)
   - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi && if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install doxygen zlib; fi; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi && if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install doxygen zlib; fi
 # Cmake build directory
   - cd yabause
   - mkdir build
