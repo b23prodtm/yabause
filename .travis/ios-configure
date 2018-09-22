@@ -1,0 +1,4 @@
+#!/bin/sh
+# pwd: yabause/build/
+#cmake -DSH2_DYNAREC=OFF -DIOS_ARCH=${myarch} -DCMAKE_TOOLCHAIN_FILE=platforms/ios/cmake/Toolchains/Toolchain-iPhoneSimulator_Xcode.cmake -DYAB_PORTS= -DCMAKE_BUILD_TYPE=Release ..
+cmake -DSH2_DYNAREC=OFF -DIOS_ARCH=${myarch} -DYAB_PORTS= -DCMAKE_BUILD_TYPE=Release ..

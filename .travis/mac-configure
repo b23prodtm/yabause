@@ -1,0 +1,10 @@
+#!/bin/sh
+# pwd: yabause/build/
+cd ../src
+echo 'INCLUDE_DIRECTORIES("/opt/X11/include")' > temp.txt
+echo 'LINK_DIRECTORIES("/opt/X11/lib")' >> temp.txt
+cat temp.txt CMakeLists.txt > temp2.txt
+rm CMakeLists.txt
+mv temp2.txt CMakeLists.txt
+cd ../build
+cmake -DSH2_DYNAREC=OFF -DCMAKE_BUILD_TYPE=Release ..

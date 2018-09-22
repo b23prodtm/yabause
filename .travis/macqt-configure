@@ -1,0 +1,4 @@
+#!/bin/sh
+# pwd: yabause/build/
+brew install qt5 sdl2
+cmake -DSH2_DYNAREC=OFF -DCMAKE_PREFIX_PATH=/usr/local/Cellar/qt5/5.3.2 -DYAB_PORTS=qt -DCMAKE_BUILD_TYPE=Release ..
