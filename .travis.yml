@@ -60,26 +60,21 @@ addons:
       name: b23prodtm/yabause
       description: Build submitted via Travis CI
     notification_email: b23prodtm@gmail.com
-    build_command_prepend: .travis/${myos}-configure
+    build_command_prepend: ../../.travis/${myos}-configure
     build_command: make
     branch_pattern: coverity_scan
 language: objective-c
 sudo: false
 before_install:
 # Coverity Scan certificate (global secure: COVERITY_SCAN_TOKEN)
-- if ([[ "${TRAVIS_JOB_NUMBER##*.}" != "1" ]] && [[ "${TRAVIS_BRANCH}" == "coverity_scan" ]]); then echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca- ; fi
-# Homebrew packages
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install doxygen zlib; fi
+  - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi && if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install doxygen zlib; fi; fi
 # Cmake build directory
-- cd yabause
-- mkdir build
-- cd build
+  - cd yabause
+  - mkdir build
+  - cd build
 script:
-  - cd ../build
-  - ../../.travis/${myos}-configure
-  #- echo | g++ -dM -E - #echo predefined variables
-  - make
+  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then ../../.travis/${myos}-configure && make; fi
 after_success:
   - cpack -G ZIP -D CPACK_PACKAGE_FILE_NAME=yabause-v${GIT_RELEASE_VERSION}.${TRAVIS_BUILD_NUMBER}-${myos}
   - git config --local user.name ${GIT_USER}
