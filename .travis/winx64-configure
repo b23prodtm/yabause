@@ -1,0 +1,7 @@
+#!/bin/sh
+# pwd: yabause/build/
+echo 'SET(CMAKE_SYSTEM_NAME Windows)' > toolchain.cmake
+echo 'SET(CMAKE_C_COMPILER   x86_64-w64-mingw32-gcc)' >> toolchain.cmake
+echo 'SET(CMAKE_CXX_COMPILER x86_64-w64-mingw32-g++)' >> toolchain.cmake
+echo 'SET(CMAKE_RC_COMPILER x86_64-w64-mingw32-windres)' >> toolchain.cmake
+cmake -DSH2_DYNAREC=OFF -DYAB_WERROR=ON -DYAB_FORCE_SECURE_STRINGS=ON -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -DYAB_PORTS= ..

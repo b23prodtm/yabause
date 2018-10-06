@@ -1,15 +1,12 @@
 matrix:
   allow_failures:
-    - compiler: clang
+    - compiler: gcc
+    - language: android
   include:
     # linux
     - compiler: gcc
       language: cpp
       env: testenv="linux gcc" myos=linux
-      script:
-        - echo | g++ -dM -E - #echo predefined variables
-        - cmake -DSH2_DYNAREC=OFF -DYAB_WERROR=ON -DYAB_FORCE_SECURE_STRINGS=ON ..
-        - make
     - compiler: gcc
       language: cpp
       env: testenv="mingw-w64 windows cross compile, libyabause only" myos=winx64
@@ -20,13 +17,6 @@ matrix:
             - g++-mingw-w64-x86-64
             - binutils-mingw-w64-x86-64
             - mingw-w64-x86-64-dev
-      script:
-        - echo 'SET(CMAKE_SYSTEM_NAME Windows)' > toolchain.cmake
-        - echo 'SET(CMAKE_C_COMPILER   x86_64-w64-mingw32-gcc)' >> toolchain.cmake
-        - echo 'SET(CMAKE_CXX_COMPILER x86_64-w64-mingw32-g++)' >> toolchain.cmake
-        - echo 'SET(CMAKE_RC_COMPILER x86_64-w64-mingw32-windres)' >> toolchain.cmake
-        - cmake -DSH2_DYNAREC=OFF -DYAB_WERROR=ON -DYAB_FORCE_SECURE_STRINGS=ON -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -DYAB_PORTS= ..
-        - make
     - compiler: clang
       language: android
       env: testenv="android port" myos=android
@@ -43,12 +33,6 @@ matrix:
           - platform-tools
           - build-tools-24.0.3
           - android-24
-      script:
-        - wget http://dl.google.com/android/repository/android-ndk-r11c-linux-x86_64.zip
-        - unzip -q android-ndk-r11c-linux-x86_64.zip
-        - export ANDROID_NDK_HOME=$(pwd)/android-ndk-r11c/
-        - cmake -DSH2_DYNAREC=OFF -DYAB_WERROR=ON -DYAB_FORCE_SECURE_STRINGS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=../src/android/armeabi.cmake -DYAB_PORTS=android ..
-        - make
     # osx
     - env:
         - testenv="os x cross ios" myos=ios myarch=armv
@@ -63,51 +47,35 @@ matrix:
     - env: testenv="os x cocoa port" myos=mac
       os: osx
       compiler: clang
-      script:
-        - cd ../src
-        - echo 'INCLUDE_DIRECTORIES("/opt/X11/include")' > temp.txt
-        - echo 'LINK_DIRECTORIES("/opt/X11/lib")' >> temp.txt
-        - cat temp.txt CMakeLists.txt > temp2.txt
-        - rm CMakeLists.txt
-        - mv temp2.txt CMakeLists.txt
-        - cd ../build
-        - cmake -DSH2_DYNAREC=OFF -DCMAKE_BUILD_TYPE=Release ..
-        - make
     - os: osx
       env: testenv="os x qt port" myos=macqt
       compiler: clang
-      script:
-        - brew install qt5 sdl2
-        - cmake -DSH2_DYNAREC=OFF -DCMAKE_PREFIX_PATH=/usr/local/Cellar/qt5/5.3.2 -DYAB_PORTS=qt -DCMAKE_BUILD_TYPE=Release ..
-        - make
 env:
   global:
     # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-    # via the "travis encrypt" command using the project repo's public key
-    - secure: sopS90ts/MzipWazyLIeLtDkSWZyV9HeMfR8mIglxWuo76T/mOCT0m4fFPRQeJ1OHO3hWMbpYzKt357B/gwcpbq1/MTm6l+mhkxTKGBmrLpT9bz3GfQcQG3UgtOBp5bgUFc0xB2geN5BYrNCiKExmuMqTFByMKvIjiRWzwiCJflc74iNHTzS4j3y/wfRypnhJ8HIyU9YSwB43QzvtvmwgHRNcQ8Z7Hsto4qs4anEM4fnKWD5yyD+sFFnZIaCtDLXcKAi8HY0ILf2jxO5SLxzv0R9tyBkbXLaaSVfHWR3NOFMJtT4vq1v+XzcD2p1c9PxsxmIsOK2TLpYEx7sCmddO5zSs884turwu1ZDT/1pUQODSaxVpCRlE+NVDoUl6tqa3DGW1rIxzp/NjRzo4WEP2+fAvPVQSKG8l7GuHhgY1m8D0lHesaNXFr6D6hiKDEmMc1/nVKW8ohMPQxC1/g7tfM61zCkDcwc5CEtB6lNxEr3Db1M1u7X0pOCbPTgt0mNJcpGlNNDRnjh4gb+gXmFMAsJKTSy4/i4ExhMvTQqUp9LA7Bu0SdCT74rH5wS2oPw65aiijFDdaItk1ZapASphwzVV4IoKMQ7/6ZWEHccLZQ63a4hSSFD0upn5qcAhGlZwdUc4wYRFayUo5pzxYbui9Zlv/XxYEC5K8vI4EunmcBw=
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "Hkf9HZos0iEaGcVtNq5IVFVBd0/t5jwHppnV5SkQrJ+vRXyUSEmwlg0u48DgFqaFlpWQhpCLlkQhS/ay7cbH6BZLk8TkLGC8EVJ7KdPI9w4q5XAzU0+hYuZ5FyxzlQO/kJTe8RewQaBa7+NXgdJMU4f+eJMbcoBiDPHuiQ+29qUkS6B/B8x+9oKNzXozxR0aoXGtvCMRcbPEnBtTTVzyldC0IqDhZB2+a7MnZOKOg43uuRMvFUPh1efyZtCDm6o3EmzQ+lMwkGBQ2qq7KQFJ18DhOhg9EYD8MKd+qhtTDoECJ2yZ34BiK4no+Crlu8Jv2XwThEg17W4pZwRjq6pDCDhWrBY80Z0c24s36MN4cLoKMsHEEmqtj0XrargA4qIyDRq+Q+92DrU0eIMl/YWJN+ogIKajI9bCGF3JSpLT799+cioDEEzJk2CBKCJCWLGV34OXY7crzjE+YpA69Oz/3kUyHFPXAiSazV20QaV2yd4ul580Ak6xxdZQSyWRGbVzvx3YchASlP4ulH6icoDqQMJldw78kexca6TZ88rNDjfdFEnLHyttsxoQN6Cwf69/P4LyIAG93PhD3dV124omhS6yBPGtZF8+f0+k/vJJN1iJ6xPEiovJlEOwfap1bNBusOo7i0y5Dm3RR+RkDFIsGZwOkB3ZbjTpE7mCoe0eMkg="
 addons:
   coverity_scan:
     project:
       name: b23prodtm/yabause
       description: Build submitted via Travis CI
     notification_email: b23prodtm@gmail.com
+    build_command_prepend: ../../.travis/${myos}-configure
     build_command: make
     branch_pattern: coverity_scan
 language: objective-c
 sudo: false
 before_install:
-- if ([[ "${TRAVIS_JOB_NUMBER##*.}" != "1" ]] && [[ "${TRAVIS_BRANCH}" == "coverity_scan" ]]); then false ; fi
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install doxygen zlib; fi
-- cd yabause
-- mkdir build
-- cd build
+# Coverity Scan certificate (global secure: COVERITY_SCAN_TOKEN)
+  - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi && if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install doxygen zlib; fi
+# Cmake build directory
+  - cd yabause
+  - mkdir build
+  - cd build
 script:
-  #- echo | g++ -dM -E - #echo predefined variables
-  - cd ../build
-  #- cmake -DSH2_DYNAREC=OFF -DIOS_ARCH=${myarch} -DCMAKE_TOOLCHAIN_FILE=platforms/ios/cmake/Toolchains/Toolchain-iPhoneSimulator_Xcode.cmake -DYAB_PORTS= -DCMAKE_BUILD_TYPE=Release ..
-  - cmake -DSH2_DYNAREC=OFF -DIOS_ARCH=${myarch} -DYAB_PORTS= -DCMAKE_BUILD_TYPE=Release ..
-  - make
+  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then ../../.travis/${myos}-configure && make; fi
 after_success:
   - cpack -G ZIP -D CPACK_PACKAGE_FILE_NAME=yabause-v${GIT_RELEASE_VERSION}.${TRAVIS_BUILD_NUMBER}-${myos}
   - git config --local user.name ${GIT_USER}

@@ -1,3 +1,5 @@
+INCLUDE_DIRECTORIES("/opt/X11/include")
+LINK_DIRECTORIES("/opt/X11/lib")
 project(yabause)
 
 include (CheckCSourceCompiles)

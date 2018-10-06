@@ -1,0 +1,4 @@
+#!/bin/sh
+# pwd: yabause/build/
+echo | g++ -dM -E - #echo predefined variables
+cmake -DSH2_DYNAREC=OFF -DYAB_WERROR=ON -DYAB_FORCE_SECURE_STRINGS=ON ..
