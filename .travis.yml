@@ -112,7 +112,7 @@ after_success:
   - cpack -G ZIP -D CPACK_PACKAGE_FILE_NAME=yabause-v${GIT_RELEASE_VERSION}.${TRAVIS_BUILD_NUMBER}-${myos}
   - git config --local user.name ${GIT_USER}
   - git config --local user.email ${GIT_MAIL}
-  - git tag "v${GIT_RELEASE_VERSION}.${TRAVIS_BUILD_NUMBER}"
+  - git tag --force "v${GIT_RELEASE_VERSION}.${TRAVIS_BUILD_NUMBER}"
 deploy:
   provider: releases
   api_key:
