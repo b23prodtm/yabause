@@ -256,7 +256,6 @@
 		2A7D3A46115BA3AF00DE3BD1 /* gen68k.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gen68k.h; path = ../c68k/gen68k.h; sourceTree = SOURCE_ROOT; };
 		2A7D3A47115BA3AF00DE3BD1 /* gen68k.inc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.pascal; name = gen68k.inc; path = ../c68k/gen68k.inc; sourceTree = SOURCE_ROOT; };
 		2A7D3A55115BA3E700DE3BD1 /* gen68k */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = gen68k; sourceTree = BUILT_PRODUCTS_DIR; };
-		2A7D3A9A115BAB9E00DE3BD1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		2A7D3AD4115BB01500DE3BD1 /* Yabause.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Yabause.icns; sourceTree = "<group>"; };
 		2A82CC9F116171DB00F15B02 /* PerCocoa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PerCocoa.h; sourceTree = "<group>"; };
 		2A82CCA0116171DB00F15B02 /* PerCocoa.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PerCocoa.m; sourceTree = "<group>"; };
@@ -336,6 +335,7 @@
 		3380FB7620F2887F002ECF59 /* c68k_op8.inc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.pascal; name = c68k_op8.inc; path = ../c68k/c68k_op8.inc; sourceTree = "<group>"; };
 		3380FB7720F2887F002ECF59 /* c68k_opF.inc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.pascal; name = c68k_opF.inc; path = ../c68k/c68k_opF.inc; sourceTree = "<group>"; };
 		3380FB7820F2887F002ECF59 /* c68k_opB.inc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.pascal; name = c68k_opB.inc; path = ../c68k/c68k_opB.inc; sourceTree = "<group>"; };
+		33F78032217F6453007CC5A9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Yabause-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Yabause-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Yabause.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Yabause.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F07E62CA15054DCC00DF8A4E /* titan.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = titan.c; path = ../titan/titan.c; sourceTree = SOURCE_ROOT; };
@@ -751,6 +751,7 @@
 				Japanese,
 				French,
 				German,
+				Base,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Yabause */;
 			projectDirPath = "";
@@ -929,7 +930,7 @@
 		2A7D3A99115BAB9E00DE3BD1 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				2A7D3A9A115BAB9E00DE3BD1 /* English */,
+				33F78032217F6453007CC5A9 /* Base */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";
