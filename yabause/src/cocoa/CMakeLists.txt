@@ -19,7 +19,8 @@ set(yabause_cocoa_SOURCES
 	vidgcd.h
 )
 
-set(yabause_cocoa_XIBS English.lproj/MainMenu)
+#  Base Internationalization Localization settings for Yabause.xcodeproj
+set(yabause_cocoa_XIBS Base.lproj/MainMenu)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
